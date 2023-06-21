@@ -45,12 +45,12 @@ $(eval $(call addlib_s,libcares,$(CONFIG_LIBCARES)))
 ################################################################################
 # Sources
 ################################################################################
-LIBCARES_VERSION=1.14.0
-LIBCARES_URL=https://c-ares.haxx.se/download/c-ares-$(LIBCARES_VERSION).tar.gz
+LIBCARES_VERSION=1.18.1
+LIBCARES_URL=https://c-ares.org/download/c-ares-$(LIBCARES_VERSION).tar.gz
 LIBCARES_DIR=c-ares-$(LIBCARES_VERSION)
 
 LIBCARES_PATCHDIR=$(LIBCARES_BASE)/patches
-$(eval $(call fetch,libcares,$(LIBCARES_URL),$(LIBCARES_VERSION).tar.gz))
+$(eval $(call fetch,libcares,$(LIBCARES_URL)))
 $(eval $(call patch,libcares,$(LIBCARES_PATCHDIR),$(LIBCARES_DIR)))
 
 ################################################################################
@@ -62,62 +62,77 @@ LIBCARES=$(LIBCARES_ORIGIN)/$(LIBCARES_DIR)
 # Library includes
 ################################################################################
 CINCLUDES-$(CONFIG_LIBCARES) += -I$(LIBCARES_BASE)/include \
-  			        -I$(LIBCARES)
+  			        -I$(LIBCARES)/include
+LIBCARES_CINCLUDES-$(CONFIG_LIBCARES) += -I$(LIBCARES)/src/lib
+CXXINCLUDES-$(CONFIG_LIBCARES) += -I$(LIBCARES_BASE)/include \
+  			        -I$(LIBCARES)/include
+LIBCARES_CXXINCLUDES-$(CONFIG_LIBCARES) += -I$(LIBCARES)/src/lib
 
 ################################################################################
 # Global flags
 ################################################################################
-LIBCARES_CFLAGS-y += -DHAVE_CONFIG_H -DHAVE_NETINET_IN_H
+LIBCARES_CFLAGS-y += -DHAVE_CONFIG_H -DCARES_BUILDING_LIBRARY -DCARES_SYMBOL_HIDING
+LIBCARES_CXXFLAGS-y += -DHAVE_CONFIG_H -DCARES_BUILDING_LIBRARY -DCARES_SYMBOL_HIDING
 
 ################################################################################
 # Sources
 ################################################################################
-LIBCARES_SRCS-y += $(LIBCARES)/ares_mkquery.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_nowarn.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_android.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_timeout.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_ns_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_getnameinfo.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_fds.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_mx_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_free_string.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_ptr_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_llist.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares__close_sockets.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_expand_string.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_strdup.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_search.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_send.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares__timeval.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_getenv.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_writev.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_version.c
-LIBCARES_SRCS-y += $(LIBCARES)/bitncmp.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_getopt.c
-LIBCARES_SRCS-y += $(LIBCARES)/inet_ntop.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares__read_line.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_srv_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_strerror.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_data.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_create_query.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_getsock.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_gethostbyaddr.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_naptr_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_process.c
-LIBCARES_SRCS-y += $(LIBCARES)/inet_net_pton.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_strcasecmp.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_free_hostent.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_cancel.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_query.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares__get_hostent.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_options.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_soa_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_a_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_destroy.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_init.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_txt_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_expand_name.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_parse_aaaa_reply.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_platform.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_gethostbyname.c
-LIBCARES_SRCS-y += $(LIBCARES)/ares_library_init.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__addrinfo2hostent.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__addrinfo_localhost.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__close_sockets.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__get_hostent.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__parse_into_addrinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__readaddrinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__sortaddrinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__read_line.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares__timeval.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_android.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_cancel.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_data.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_destroy.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_expand_name.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_expand_string.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_fds.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_free_hostent.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_free_string.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_freeaddrinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_getaddrinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_getenv.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_gethostbyaddr.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_gethostbyname.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_getnameinfo.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_getsock.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_init.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_library_init.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_llist.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_mkquery.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_create_query.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_nowarn.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_options.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_a_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_aaaa_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_caa_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_mx_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_naptr_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_ns_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_ptr_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_soa_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_srv_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_txt_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_parse_uri_reply.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_platform.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_process.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_query.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_search.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_send.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_strcasecmp.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_strdup.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_strerror.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_strsplit.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_timeout.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_version.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/ares_writev.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/bitncmp.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/inet_net_pton.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/inet_ntop.c
+LIBCARES_SRCS-y += $(LIBCARES)/src/lib/windows_port.c

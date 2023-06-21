@@ -1,5 +1,5 @@
-/* ares_config.h.  Generated from ares_config.h.in by configure.  */
-/* ares_config.h.in.  Generated from configure.ac by autoheader.  */
+/* src/lib/ares_config.h.  Generated from ares_config.h.in by configure.  */
+/* src/lib/ares_config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
@@ -7,11 +7,11 @@
 /* define this if ares is built for a big endian system */
 /* #undef ARES_BIG_ENDIAN */
 
-/* when building as static part of libcurl */
-/* #undef BUILDING_LIBCURL */
-
 /* Defined for build that exposes internal static functions for testing. */
 /* #undef CARES_EXPOSE_STATICS */
+
+/* a suitable file/device to read random data from */
+#define CARES_RANDOM_FILE "/dev/urandom"
 
 /* Defined for build with symbol hiding. */
 #define CARES_SYMBOL_HIDING 1
@@ -74,7 +74,7 @@
 #define HAVE_BOOL_T 1
 
 /* Define to 1 if you have the clock_gettime function and monotonic timer. */
-/* ##define HAVE_CLOCK_GETTIME_MONOTONIC 1 */
+#define HAVE_CLOCK_GETTIME_MONOTONIC 1
 
 /* Define to 1 if you have the closesocket function. */
 /* #undef HAVE_CLOSESOCKET */
@@ -245,6 +245,9 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
+
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
 
@@ -357,19 +360,19 @@
 /* #undef NEED_THREAD_SAFE */
 
 /* cpu-machine-OS */
-#define OS "x86_64-pc-linux-gnu"
+#define OS "x86_64-pc-linux-musl"
 
 /* Name of package */
 #define PACKAGE "c-ares"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "c-ares mailing list: http://cool.haxx.se/mailman/listinfo/c-ares"
+#define PACKAGE_BUGREPORT "c-ares mailing list: http://lists.haxx.se/listinfo/c-ares"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "c-ares"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "c-ares 1.14.0"
+#define PACKAGE_STRING "c-ares 1.18.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "c-ares"
@@ -378,10 +381,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.14.0"
-
-/* a suitable file/device to read random data from */
-#define RANDOM_FILE "/dev/urandom"
+#define PACKAGE_VERSION "1.18.1"
 
 /* Define to the type qualifier pointed by arg 5 for recvfrom. */
 #define RECVFROM_QUAL_ARG5 
@@ -452,17 +452,20 @@
 /* Define to the function return type for send. */
 #define SEND_TYPE_RETV ssize_t
 
-/* Define to 1 if you have the ANSI C header files. */
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
 #define STDC_HEADERS 1
 
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
+/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. This
+   macro is obsolete. */
 #define TIME_WITH_SYS_TIME 1
 
 /* Define to disable non-blocking sockets. */
 /* #undef USE_BLOCKING_SOCKETS */
 
 /* Version number of package */
-#define VERSION "1.14.0"
+#define VERSION "1.18.1"
 
 /* Define to avoid automatic inclusion of winsock.h */
 /* #undef WIN32_LEAN_AND_MEAN */
@@ -482,11 +485,6 @@
 /* Define to 1 if OS is AIX. */
 #ifndef _ALL_SOURCE
 /* #  undef _ALL_SOURCE */
-#endif
-
-/* Enable large inode numbers on Mac OS X 10.5.  */
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
